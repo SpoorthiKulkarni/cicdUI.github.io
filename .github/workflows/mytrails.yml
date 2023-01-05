@@ -5,36 +5,36 @@ on:
       - mytrails
 jobs:
 
-  BUILD:
-    name: BUILD
-    runs-on: ubuntu-latest
+  #BUILD:
+   # name: BUILD
+    #runs-on: ubuntu-latest
 
-    steps:
+    #steps:
 
-        - name: checkout code from vikasbandhu-ui github repo 🛎️
-          uses: actions/checkout@v3
+     #   - name: checkout code from vikasbandhu-ui github repo 🛎️
+      #    uses: actions/checkout@v3
 
-        - name: setup Nodejs v14 environment on github hosted runner
-          uses: actions/setup-node@v3
+       # - name: setup Nodejs v14 environment on github hosted runner
+        #  uses: actions/setup-node@v3
 
-          with:
-              node-version: 14
+         # with:
+          #    node-version: 14
 
-        - name: Install dependencies 🔧 
-          run: |
-            node -v
-            npx yarn install
+        #- name: Install dependencies 🔧 
+         # run: |
+          #  node -v
+           # npx yarn install
 
-        - name: Build application 🛎️
-          run: npm run build:dev 
-          env:
-              CI: false
+        #- name: Build application 🛎️
+         # run: npm run build:dev 
+          #env:
+           #   CI: false
 
-        - name: Upload Artifacts
-          uses: actions/upload-artifact@v3
-          with:
-            name: vb-test-buildFile
-            path: build/
+       # - name: Upload Artifacts
+        #  uses: actions/upload-artifact@v3
+         # with:
+          #  name: vb-test-buildFile
+           # path: build/
 
   # BUILD_APPLICATION:
   #   needs: SETUP_ENVIRONMENT
@@ -56,7 +56,7 @@ jobs:
   #           path: build/
     
   TEST:
-    needs: BUILD
+    # needs: BUILD
     name: TEST
     runs-on: ubuntu-latest 
 
@@ -65,7 +65,8 @@ jobs:
         - name: Checkout private tools
           uses: actions/checkout@v3
           with:
-            repository: sanjay-gowdaa/justCICD1
+            # repository: sanjay-gowdaa/justCICD1
+            respository : https://github.com/VikasBandhu/VB_GUI_SL_Automation.git
             token: ${{ secrets.GH_PATH }} # `GH_PAT` is a secret that contains your PAT
             path: chromeDriver
             ref: chromeDriver
@@ -77,44 +78,50 @@ jobs:
 
         - name: run testsuite
           run: |
-            cd chromeDriver
+            # cd chromeDriver
             ls
             npm i
-            cd batch
-            chmod 755 ./VBbatch.sh
-            ./VBbatch.sh
+            cd testsuite
+            node testCase005.js Test Firefox Headless
+            node testCase021.js Test Firefox Headless
+            node testCase023.js Test Firefox Headless
 
-  DEPLOY:
+            
+            # cd batch
+            # chmod 755 ./VBbatch.sh
+            # ./VBbatch.sh
 
-    name: DEPLOY TO S3.
-    needs: [BUILD , TEST]
-    runs-on: ubuntu-latest    
+  #DEPLOY:
 
-    steps:
+   # name: DEPLOY TO S3.
+    #needs: [BUILD , TEST]
+    #runs-on: ubuntu-latest    
 
-        - name: Download a single artifact
-          uses: actions/download-artifact@v3
-          with:
-            name: vb-test-buildFile
-            path: build 
-        - name: jst
-          run: |
+    #steps:
+
+     #   - name: Download a single artifact
+      #    uses: actions/download-artifact@v3
+       #   with:
+        #    name: vb-test-buildFile
+         #   path: build 
+        #- name: jst
+         # run: |
               # cd ..
-              ls
+          #    ls
 
 
-        - name: Deploy to S3
-          uses: jakejarvis/s3-sync-action@master
-          with:
-            args: --acl public-read --delete
+        #- name: Deploy to S3
+         # uses: jakejarvis/s3-sync-action@master
+          #with:
+           # args: --acl public-read --delete
 
         
 
-          env:
-            AWS_S3_BUCKET: ${{ secrets.AWS_PRODUCTION_BUCKET_NAME }}
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_REGION: ${{ secrets.AWS_REGION }}
-            SOURCE_DIR: "build"
+        #  env:
+         #   AWS_S3_BUCKET: ${{ secrets.AWS_PRODUCTION_BUCKET_NAME }}
+          #  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            #AWS_REGION: ${{ secrets.AWS_REGION }}
+            #SOURCE_DIR: "build"
 
     
